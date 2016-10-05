@@ -1,0 +1,219 @@
+import java.util.*;
+class CalculatorEngine{
+    // precedence values
+    private static final int OPAREN=8;
+    private static final int EXP=7;
+    private static final int MULT=6;
+    private static final int DIV=5;
+    private static final int PLUS=4;
+    private static final int MINUS=3;
+    private static final int OPERAND=2;
+    private static final int CPAREN=1;
+
+    private Stack<ExpressionToken> stack = new Stack<>();
+    private Stack<Double> evalStack = new Stack<>();
+
+    private String infixExpr = "";
+    private String postExpr = "";
+    private String result = "";
+    
+
+    public double add(double leftOp,double rightOp){
+        return leftOp + rightOp;
+    }
+    public double subtract(double leftOp,double rightOp){
+        return leftOp - rightOp;
+    }
+    public double multiply(double leftOp,double rightOp){
+        return leftOp * rightOp;
+    }
+    public double divide(double leftOp,double rightOp){
+        return leftOp/rightOp;
+    }
+    public void digit(int d){
+    }
+
+    public void compute(){
+
+        //convert infixExpr to postExpr
+        infixToPostfix();
+
+        //calculate result of postExpr
+        result = evalPostFix();
+
+
+    }
+
+    //attempts to evaluate postExpr, returns true if its a valid expr, false if not 
+    public String evalPostFix(){
+        
+        String[] expr = postExpr.split("");
+
+        int i =0;
+        //tokenize postExpr
+        while(i < postExpr.length()){
+            //must be an operator
+            if(!isNumeric(expr[i]) && !expr[i].equals(" ")){
+                //System.out.println("OPERATOR: " + expr[i++]);
+                // try to pop off stack twice to get operands. if its empty, return syntax error
+                //System.out.println("STACK SIZE: " + evalStack.size());
+                double leftOp=0;double rightOp =0;
+                if(evalStack.empty())
+                    return "SYNTAX ERROR";
+                else
+                    rightOp = evalStack.pop();
+                if(evalStack.empty())
+                    return "SYNTAX ERROR";
+                else
+                    leftOp = evalStack.pop();
+
+                //decode operator
+                if(expr[i].equals("+")){
+                    System.out.println("add");
+                    evalStack.push(add(leftOp,rightOp));
+                }
+                if(expr[i].equals("-"))
+                    evalStack.push(subtract(leftOp,rightOp));
+                if(expr[i].equals("*"))
+                    evalStack.push(multiply(leftOp,rightOp));
+                if(expr[i].equals("/")){
+                    if(rightOp ==0)
+                        return "DIVISION BY ZERO";
+                    evalStack.push(divide(leftOp,rightOp));
+                }
+                i++;
+
+
+                
+
+            }
+            // else if its an operand
+            else if(isNumeric(expr[i])){
+                String nextOperand = "";
+                while(i < postExpr.length() && isNumeric(expr[i]))
+                    nextOperand+=expr[i++];
+                System.out.println(nextOperand);
+                evalStack.push(Double.parseDouble(nextOperand));
+                nextOperand = "";
+
+            }
+            // must be a space, just increment past it
+            else
+                i++;
+
+        }
+
+
+
+        return Double.toString(evalStack.pop());
+    }
+
+    public void fact(){
+    }
+    public void clear(){
+        //clear input string and result string and both stacks
+        infixExpr = "";
+        result = "";
+        evalStack.clear();
+        stack.clear();
+
+    }
+    public void exp(){
+    }
+    public String  display(){
+        if(!result.equals(""))
+            return result;
+        return infixExpr;
+    }
+    //takes input from gui and adds to inputExpr
+    public void addInput(char c){
+        infixExpr+=Character.toString(c);
+    }
+    //returns true if infixExpr is a valid expression, false if not
+    public void infixToPostfix(){
+        String[] expr = infixExpr.split("");
+        int i =0;
+        // will load digits into this
+        String nextOperand = "";
+
+
+        while(i <expr.length){
+            // if next character is an operator, tokenize it
+            if(!isNumeric(expr[i])){
+                //System.out.println("found operator");
+                //create token
+                ExpressionToken t = tokenize(expr[i]);
+                if(t.s.equals("(")){
+                    t.precedence = 0;
+                    stack.push(t);
+                }
+                //pop the stack till we find matching open paren
+                else if(t.s.equals(")")){
+                    while(!stack.empty() && !stack.peek().s.equals("("))
+                        postExpr+=stack.pop().s;
+                    //pop the ( off
+                    stack.pop();
+                }
+
+                //if operator has higher priority than top of stack, push it
+                else if(stack.empty() || t.precedence > stack.peek().precedence)
+                    stack.push(t);
+                //else, pop off top, add to outputstream then push
+                else{
+                    while(!stack.empty() && t.precedence <= stack.peek().precedence)
+                        postExpr+=stack.pop().s;
+                    stack.push(t);
+                }
+                i++;
+            }
+            // if next char isnt an operator, it must be a digit or .
+            // while loop to read the entire operand
+            else{
+                nextOperand+=expr[i++];
+                while(i< expr.length && isNumeric(expr[i])){
+                        nextOperand+=expr[i++];
+                }
+        //        System.out.println("OPERAND: " + nextOperand);
+                postExpr +=nextOperand + " "; 
+                nextOperand = "";
+
+            }
+
+        }
+
+        //if stack isnt empty, pop till empty and add to output
+        while(!stack.empty())
+            postExpr+=stack.pop().s;
+        System.out.println(postExpr);
+    }
+
+    public ExpressionToken tokenize(String s){
+        if(s.equals("("))
+            return new ExpressionToken("(",OPAREN);
+        if(s.equals("^"))
+            return new ExpressionToken("^",EXP);
+        if(s.equals("*"))
+            return new ExpressionToken("*",MULT);
+        if(s.equals("/"))
+            return new ExpressionToken("/",DIV);
+        if(s.equals("+"))
+            return new ExpressionToken("+",PLUS);
+        if(s.equals("-"))
+            return new ExpressionToken("-",MINUS);
+        if(s.equals(")"))
+            return new ExpressionToken(")",CPAREN);
+        
+        return new ExpressionToken("ERROR",0);
+
+    }
+    public  boolean isNumeric(String s) {  
+        if(s.equals("."))
+            return true;
+        if(s.equals("-"))
+            return false;
+        else
+            return s.matches("[-+]?\\d*\\.?\\d+");  
+    }
+}  
+
+
