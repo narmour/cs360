@@ -37,7 +37,8 @@ CalculatorFrame(CalculatorEngine e) {
 	bottom.add(b = new Button("^")); b.addActionListener(this);
 	bottom.add(b = new Button("(")); b.addActionListener(this);
 	bottom.add(b = new Button(")")); b.addActionListener(this);
-	bottom.add(b = new Button("(")); b.addActionListener(this);
+	bottom.add(b = new Button("M+")); b.addActionListener(this);
+	bottom.add(b = new Button("MR")); b.addActionListener(this);
 
 	setLayout(new BorderLayout());
 	add("North", top);
@@ -49,7 +50,9 @@ CalculatorFrame(CalculatorEngine e) {
 
 public void actionPerformed(ActionEvent e) {
 	// System.out.println("Action command string is " + e.getActionCommand());
-	char c = e.getActionCommand().charAt(0);
+	//char c = e.getActionCommand().charAt(0);
+    String c = e.getActionCommand();
+    System.out.println(c);
     /*
 	if (c == '+') 
 		engine.add();
@@ -69,9 +72,14 @@ public void actionPerformed(ActionEvent e) {
 		engine.fact();
 	else if (c == '^') engine.exp();
     */
-    if(c =='C')
+    
+    if(c.equals("C"))
         engine.clear();
-    else if(c!='=')
+    else if (c.equals("M+"))
+        engine.save();
+    else if (c.equals("MR"))
+        engine.recall();
+    else if(!c.equals("="))
         engine.addInput(c);
     
     else

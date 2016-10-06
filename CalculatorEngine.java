@@ -15,6 +15,7 @@ class CalculatorEngine{
 
     private String infixExpr = "";
     private String postExpr = "";
+    private String savedExpr = "";
     private String result = "";
     
 
@@ -53,23 +54,24 @@ class CalculatorEngine{
         //tokenize postExpr
         while(i < postExpr.length()){
             //must be an operator
+            if(expr[i].equals("(") || expr[i].equals(")"))
+                return "SYNTAX ERROR PAREN";
             if(!isNumeric(expr[i]) && !expr[i].equals(" ")){
                 //System.out.println("OPERATOR: " + expr[i++]);
                 // try to pop off stack twice to get operands. if its empty, return syntax error
                 //System.out.println("STACK SIZE: " + evalStack.size());
                 double leftOp=0;double rightOp =0;
                 if(evalStack.empty())
-                    return "SYNTAX ERROR";
+                    return "SYNTAX ERROR1";
                 else
                     rightOp = evalStack.pop();
                 if(evalStack.empty())
-                    return "SYNTAX ERROR";
+                    return "SYNTAX ERROR2";
                 else
                     leftOp = evalStack.pop();
 
                 //decode operator
                 if(expr[i].equals("+")){
-                    System.out.println("add");
                     evalStack.push(add(leftOp,rightOp));
                 }
                 if(expr[i].equals("-"))
@@ -82,10 +84,6 @@ class CalculatorEngine{
                     evalStack.push(divide(leftOp,rightOp));
                 }
                 i++;
-
-
-                
-
             }
             // else if its an operand
             else if(isNumeric(expr[i])){
@@ -104,7 +102,7 @@ class CalculatorEngine{
         }
 
 
-
+        // return result
         return Double.toString(evalStack.pop());
     }
 
@@ -113,6 +111,7 @@ class CalculatorEngine{
     public void clear(){
         //clear input string and result string and both stacks
         infixExpr = "";
+        postExpr = "";
         result = "";
         evalStack.clear();
         stack.clear();
@@ -125,9 +124,17 @@ class CalculatorEngine{
             return result;
         return infixExpr;
     }
+
+    public void save(){
+        savedExpr = infixExpr;
+    }
+    public void recall(){
+        infixExpr = savedExpr;
+    }
+
     //takes input from gui and adds to inputExpr
-    public void addInput(char c){
-        infixExpr+=Character.toString(c);
+    public void addInput(String c){
+        infixExpr+=c;
     }
     //returns true if infixExpr is a valid expression, false if not
     public void infixToPostfix(){
