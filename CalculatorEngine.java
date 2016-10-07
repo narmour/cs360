@@ -18,23 +18,6 @@ class CalculatorEngine{
     private String savedExpr = "";
     private String result = "";
     
-    
-
-    public double add(double leftOp,double rightOp){
-        return leftOp + rightOp;
-    }
-    public double subtract(double leftOp,double rightOp){
-        return leftOp - rightOp;
-    }
-    public double multiply(double leftOp,double rightOp){
-        return leftOp * rightOp;
-    }
-    public double divide(double leftOp,double rightOp){
-        return leftOp/rightOp;
-    }
-    public void digit(int d){
-    }
-
     public void compute(){
 
         //convert infixExpr to postExpr
@@ -111,8 +94,6 @@ class CalculatorEngine{
         return Double.toString(evalStack.pop());
     }
 
-    public void fact(){
-    }
     public void clear(){
         //clear input string and result string and both stacks
         infixExpr = "";
@@ -122,13 +103,10 @@ class CalculatorEngine{
         stack.clear();
 
     }
-    public void exp(){
-    }
     public String  display(){
         String r = result;
         //if we display result, clear everything
         if(!result.equals("")){
-            result = "";
             clear();
             return r;
         }
