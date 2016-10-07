@@ -18,6 +18,7 @@ class CalculatorEngine{
     private String savedExpr = "";
     private String result = "";
     
+    
 
     public double add(double leftOp,double rightOp){
         return leftOp + rightOp;
@@ -57,9 +58,7 @@ class CalculatorEngine{
             if(expr[i].equals("(") || expr[i].equals(")"))
                 return "SYNTAX ERROR PAREN";
             if(!isNumeric(expr[i]) && !expr[i].equals(" ")){
-                //System.out.println("OPERATOR: " + expr[i++]);
                 // try to pop off stack twice to get operands. if its empty, return syntax error
-                //System.out.println("STACK SIZE: " + evalStack.size());
                 double leftOp=0;double rightOp =0;
                 if(evalStack.empty())
                     return "SYNTAX ERROR1";
@@ -71,18 +70,24 @@ class CalculatorEngine{
                     leftOp = evalStack.pop();
 
                 //decode operator
-                if(expr[i].equals("+")){
-                    evalStack.push(add(leftOp,rightOp));
-                }
+                if(expr[i].equals("+"))
+                    //evalStack.push(add(leftOp,rightOp));
+                    evalStack.push(leftOp+rightOp);
                 if(expr[i].equals("-"))
-                    evalStack.push(subtract(leftOp,rightOp));
+                    //evalStack.push(subtract(leftOp,rightOp));
+                    evalStack.push(leftOp-rightOp);
                 if(expr[i].equals("*"))
-                    evalStack.push(multiply(leftOp,rightOp));
+                    //evalStack.push(multiply(leftOp,rightOp));
+                    evalStack.push(leftOp*rightOp);
                 if(expr[i].equals("/")){
                     if(rightOp ==0)
                         return "DIVISION BY ZERO";
-                    evalStack.push(divide(leftOp,rightOp));
+                    evalStack.push(leftOp/rightOp);
                 }
+		        if(expr[i].equals("^")){
+                    evalStack.push(Math.pow(leftOp,rightOp));
+                }
+		
                 i++;
             }
             // else if its an operand
@@ -120,8 +125,13 @@ class CalculatorEngine{
     public void exp(){
     }
     public String  display(){
-        if(!result.equals(""))
-            return result;
+        String r = result;
+        //if we display result, clear everything
+        if(!result.equals("")){
+            result = "";
+            clear();
+            return r;
+        }
         return infixExpr;
     }
 

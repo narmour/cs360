@@ -52,7 +52,6 @@ public void actionPerformed(ActionEvent e) {
 	// System.out.println("Action command string is " + e.getActionCommand());
 	//char c = e.getActionCommand().charAt(0);
     String c = e.getActionCommand();
-    System.out.println(c);
     /*
 	if (c == '+') 
 		engine.add();
@@ -80,12 +79,11 @@ public void actionPerformed(ActionEvent e) {
     else if (c.equals("MR"))
         engine.recall();
     else if(!c.equals("="))
-        engine.addInput(c);
-    
+        engine.addInput(c); 
     else
         engine.compute();
     
-	display.setText(engine.display());
+    display.setText(engine.display());
 }
 
 public static void main(String arg[]) {
