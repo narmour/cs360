@@ -2,11 +2,11 @@ import java.util.*;
 class CalculatorEngine{
     // precedence values
     private static final int OPAREN=8;
-    private static final int EXP=7;
-    private static final int MULT=6;
-    private static final int DIV=5;
-    private static final int PLUS=4;
-    private static final int MINUS=4;
+    private static final int EXP=6;
+    private static final int MULT=4;
+    private static final int DIV=3;
+    private static final int PLUS=2;
+    private static final int MINUS=2;
     private static final int CPAREN=1;
 
     //stacks and internal strings
@@ -66,8 +66,11 @@ class CalculatorEngine{
                     evalStack.push(leftOp-rightOp);
                 if(expr[i].equals("*"))
                     evalStack.push(leftOp*rightOp);
-		        if(expr[i].equals("^"))
+		        if(expr[i].equals("^")){
+                    System.out.println("leftOp: " + leftOp);
+                    System.out.println("rightOp: " + rightOp);
                     evalStack.push(Math.pow(leftOp,rightOp));
+                }
                 if(expr[i].equals("/")){
                     if(rightOp ==0)
                         return "DIVISION BY ZERO";
@@ -109,8 +112,13 @@ class CalculatorEngine{
     }
     //display the current infixExpr if there is one, else justs returns the calculated result.
     public String  display(){
-        if(!infixExpr.equals(""))
-            return infixExpr;
+        if(!infixExpr.equals("")){
+            //only display first 20 chars if longer than 20
+            if(infixExpr.length() >=20)
+                return infixExpr.substring(0,20);
+            else
+                return infixExpr;
+        }
         return result;
     }
 
@@ -157,8 +165,14 @@ class CalculatorEngine{
                 }
 
                 //if operator has higher priority than top of stack, push it
-                else if(stack.empty() || t.precedence > stack.peek().precedence)
+                else if(stack.empty() || t.precedence > stack.peek().precedence){
+                //check for exponentiation
+                    if(t.s.equals("^"))
+                        t.precedence = 5;
                     stack.push(t);
+                }
+                //else if(t.s.equals("^"))
+                  //  stack.push(t);
                 //else, pop off top, add to outputstream then push
                 else{
                     while(!stack.empty() && t.precedence <= stack.peek().precedence)
