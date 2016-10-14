@@ -49,28 +49,8 @@ CalculatorFrame(CalculatorEngine e) {
 }
 
 public void actionPerformed(ActionEvent e) {
-	// System.out.println("Action command string is " + e.getActionCommand());
 	//char c = e.getActionCommand().charAt(0);
     String c = e.getActionCommand();
-    /*
-	if (c == '+') 
-		engine.add();
-	else if (c == '-') 
-		engine.subtract();
-	else if (c == '*') 
-		engine.multiply();
-	else if (c == '/') 
-		engine.divide();
-	else if (c >= '0' && c <= '9') 
-		engine.digit(c - '0');
-	else if (c == '=') 
-		engine.compute();
-	else if (c == 'C') 
-		engine.clear();
-	else if (c == '!') 
-		engine.fact();
-	else if (c == '^') engine.exp();
-    */
     
     if(c.equals("C"))
         engine.clear();

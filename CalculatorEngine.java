@@ -6,18 +6,19 @@ class CalculatorEngine{
     private static final int MULT=6;
     private static final int DIV=5;
     private static final int PLUS=4;
-    private static final int MINUS=3;
-    private static final int OPERAND=2;
+    private static final int MINUS=4;
     private static final int CPAREN=1;
 
+    //stacks and internal strings
     private Stack<ExpressionToken> stack = new Stack<>();
     private Stack<Double> evalStack = new Stack<>();
-
     private String infixExpr = "";
     private String postExpr = "";
     private String savedExpr = "";
     private String result = "";
     
+    // when the = button is pressed, convert display value to postfix then attempt to evaluate it into
+    // result. clear everything after.
     public void compute(){
 
         //convert infixExpr to postExpr
@@ -25,6 +26,12 @@ class CalculatorEngine{
 
         //calculate result of postExpr
         result = evalPostFix();
+
+        //clear input strings and both stacks
+        infixExpr = "";
+        postExpr = "";
+        evalStack.clear();
+        stack.clear();
 
 
     }
@@ -39,46 +46,46 @@ class CalculatorEngine{
         while(i < postExpr.length()){
             //must be an operator
             if(expr[i].equals("(") || expr[i].equals(")"))
-                return "SYNTAX ERROR PAREN";
+                return "SYNTAX ERROR";
             if(!isNumeric(expr[i]) && !expr[i].equals(" ")){
                 // try to pop off stack twice to get operands. if its empty, return syntax error
                 double leftOp=0;double rightOp =0;
                 if(evalStack.empty())
-                    return "SYNTAX ERROR1";
+                    return "SYNTAX ERROR";
                 else
                     rightOp = evalStack.pop();
                 if(evalStack.empty())
-                    return "SYNTAX ERROR2";
+                    return "SYNTAX ERROR";
                 else
                     leftOp = evalStack.pop();
 
-                //decode operator
+                //decode operator and apply proper operaiton
                 if(expr[i].equals("+"))
-                    //evalStack.push(add(leftOp,rightOp));
                     evalStack.push(leftOp+rightOp);
                 if(expr[i].equals("-"))
-                    //evalStack.push(subtract(leftOp,rightOp));
                     evalStack.push(leftOp-rightOp);
                 if(expr[i].equals("*"))
-                    //evalStack.push(multiply(leftOp,rightOp));
                     evalStack.push(leftOp*rightOp);
+		        if(expr[i].equals("^"))
+                    evalStack.push(Math.pow(leftOp,rightOp));
                 if(expr[i].equals("/")){
                     if(rightOp ==0)
                         return "DIVISION BY ZERO";
                     evalStack.push(leftOp/rightOp);
                 }
-		        if(expr[i].equals("^")){
-                    evalStack.push(Math.pow(leftOp,rightOp));
-                }
+                
 		
                 i++;
             }
             // else if its an operand
             else if(isNumeric(expr[i])){
+                //read in the entire number
                 String nextOperand = "";
                 while(i < postExpr.length() && isNumeric(expr[i]))
                     nextOperand+=expr[i++];
-                System.out.println(nextOperand);
+                //System.out.println(nextOperand);
+                
+                //push to stack
                 evalStack.push(Double.parseDouble(nextOperand));
                 nextOperand = "";
 
@@ -94,28 +101,27 @@ class CalculatorEngine{
         return Double.toString(evalStack.pop());
     }
 
+    //clear result and infixExpr, display will show nothing after this.
     public void clear(){
-        //clear input string and result string and both stacks
-        infixExpr = "";
-        postExpr = "";
         result = "";
-        evalStack.clear();
-        stack.clear();
+        infixExpr = "";
 
     }
+    //display the current infixExpr if there is one, else justs returns the calculated result.
     public String  display(){
-        String r = result;
-        //if we display result, clear everything
-        if(!result.equals("")){
-            clear();
-            return r;
-        }
-        return infixExpr;
+        if(!infixExpr.equals(""))
+            return infixExpr;
+        return result;
     }
 
+    //if theres an expression, save that, else save result
     public void save(){
-        savedExpr = infixExpr;
+        if(!infixExpr.equals(""))
+            savedExpr = infixExpr;
+        else
+            savedExpr = result;
     }
+    //set display to whatever was saved.
     public void recall(){
         infixExpr = savedExpr;
     }
@@ -182,6 +188,7 @@ class CalculatorEngine{
         System.out.println(postExpr);
     }
 
+    //given a string s, create a token object for the infix to postfix conversion stack.
     public ExpressionToken tokenize(String s){
         if(s.equals("("))
             return new ExpressionToken("(",OPAREN);
@@ -201,6 +208,7 @@ class CalculatorEngine{
         return new ExpressionToken("ERROR",0);
 
     }
+    //returns true if s is a numeric character
     public  boolean isNumeric(String s) {  
         if(s.equals("."))
             return true;
