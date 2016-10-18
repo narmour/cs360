@@ -34,8 +34,91 @@ class SweepLine{
             yTree.insert(low);
             yTree.insert(high);
         }
-        System.out.println("YTREE");
-        yTree.print(yTree.root);
+        //System.out.println("YTREE");
+        //yTree.print(yTree.root);
+    }
+    // performs iterative in order traversal to check nodes
+    public double sweepXTree(){
+        int counter=1;int L=0;
+        TreeNode prevX = null;
+        TreeNode nextX = null;
+
+        prevX = xTree.findMin();
+
+        while(prevX !=null){
+            nextX = successor(xTree,prevX);
+            if(nextX == null)
+                System.out.println("NULL");
+            if(counter!=0)
+                L = L + (nextX.getPrimary() - prevX.getPrimary());
+            prevX = nextX;
+            counter = (prevX.getLH() == false) ? counter++:counter--;
+            System.out.println("counter: " + counter);
+        }
+
+        return L;
+
+    }
+
+    // given bst r and a node n, find next smalelst highest node to n
+    private TreeNode successor(BinarySearchTree r, TreeNode n){
+        if(n.right() !=null)
+            return r.findMin(n.right());
+        TreeNode succ = null;
+        TreeNode root = r.root;
+
+        while(root!=null){
+            if(n.getPrimary()  < root.getPrimary()){
+                succ = root;
+                root = root.left();
+            }
+            else if(n.getPrimary() > root.getPrimary()){
+                root = root.right();
+            }
+            else
+                break;
+        }
+        return succ;
+
+    }
+
+    // returns the covered by the inputRectangles
+    public double computeArea(){
+        double area = 0;
+
+        while(!yTree.empty(yTree.root)){
+            int curY=0;int preY=0;
+            double L = 0;
+
+            TreeNode n = new TreeNode();
+            n = yTree.findMin();
+            yTree.deleteMin();
+            curY = n.getPrimary();
+
+            L = sweepXTree();
+
+            area = area + L*(curY-preY);
+            preY= curY;
+            // create and insert two xTreeNodes if low value
+            if(n.getLH() == false){
+                TreeNode xLow = new TreeNode(n.getLow(),n.getID(),false,n.getPrimary(),n.getPrimary() + inputRectangles.get(n.getID()).height);
+
+                TreeNode xHigh = new TreeNode(n.getHigh(),n.getID(),true,n.getPrimary(),n.getPrimary() + inputRectangles.get(n.getID()).height);
+
+                xTree.insert(xLow);
+                xTree.insert(xHigh);
+                System.out.println("added two xnodes");
+                System.out.println("lowx : " + xLow.getPrimary());
+                System.out.println("highx : " + xHigh.getPrimary());
+            }
+            // else remove two xTreeNodes
+            else{
+                xTree.remove(n.getLow());
+                xTree.remove(n.getHigh());
+            }
+
+        }
+        return area;
     }
 
     
@@ -55,6 +138,10 @@ class SweepLine{
 
         // fill ytree
         sl.fillYTree();
+
+        //get area
+        sl.computeArea();
+//        System.out.println(sl.successor(sl.yTree,sl.yTree.root).getPrimary());
 
 
 

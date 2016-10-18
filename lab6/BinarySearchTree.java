@@ -75,8 +75,13 @@ class BinarySearchTree{
 
     }
 
+    TreeNode findMin(){
+        return findMin(root);
+    }
 
     TreeNode findMin(TreeNode r){
+        if(r == null)
+            return r;
         while(r.left()!=null)
             r = r.left();
         return r;
@@ -97,7 +102,7 @@ class BinarySearchTree{
 
 
     // return true if r is null
-    boolean isEmpty(TreeNode r){
+    boolean empty(TreeNode r){
         if(r == null)
             return true;
         return false;
