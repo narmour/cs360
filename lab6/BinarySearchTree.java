@@ -14,7 +14,10 @@ class BinarySearchTree{
 
     // add  n into root
     public void insert(TreeNode n){
-        root = insert(root,n);
+        if(!find(n.getPrimary()))
+            root = insert(root,n);
+        else
+            System.out.println("DUPLICATE: " + n.getPrimary());
     }
 
     // private method used to recursively add a node
@@ -46,10 +49,21 @@ class BinarySearchTree{
 
     // public method for finding a key in the tree. returns the node with key if it exists,
     // else returns a null node.
-    public TreeNode find(int key){
+    public boolean find(int key){
         return find(root,key);
     }
 
+    private boolean find(TreeNode r,int key){
+        if(r == null)
+            return false;
+        else if(r.getPrimary() > key)
+            return find(r.left(),key);
+        else if(r.getPrimary() < key)
+            return find(r.right(),key);
+        else
+            return true;
+    }
+/*
     private TreeNode find(TreeNode r,int key){
         while(r!=null){
             // search right subtree
@@ -66,7 +80,7 @@ class BinarySearchTree{
         return r;
     }
 
-
+*/
 
     // finds min value key, delete it and return it for root r
     void deleteMin(){
@@ -86,6 +100,7 @@ class BinarySearchTree{
             r = r.left();
         return r;
     }
+
 
     // recursive function that sets root with min node removed
     TreeNode deleteMin(TreeNode r){
@@ -111,7 +126,7 @@ class BinarySearchTree{
     // attemps to remove key from root
     public void remove(int key){
         // only call remove if key is in root
-        if(find(key)!=null)
+        if(find(key))
             root = remove(root,key);
         else
             System.out.println("ERROR, key must be in root");
