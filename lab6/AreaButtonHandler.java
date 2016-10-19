@@ -10,20 +10,9 @@ class AreaButtonHandler implements ActionListener{
 
 
 
-    public AreaButtonHandler(){
-        // manually creating array for now, will read it from file later.
-        input = new ArrayList<Rectangle>();
-        Rectangle r0 = new Rectangle(0,0,4,4);
-        Rectangle r1 = new Rectangle(2,2,1,1);
-        Rectangle r2 = new Rectangle(1,1,5,5);
-        
-        input.add(r0);
-        input.add(r1);
-        input.add(r2);
-
+    public AreaButtonHandler(ArrayList<Rectangle> i){
+        input = i;
         sweep = new SweepLine(input);
-
-
 
     }
 

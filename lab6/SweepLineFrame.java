@@ -9,11 +9,9 @@ class SweepLineFrame extends JFrame{
     private static final int FRAME_Y_ORIGIN = 250;
 
 
-    private JButton areaButton;
-    private AreaButtonHandler handler;
 
 
-    public SweepLineFrame(){
+    public SweepLineFrame(ArrayList<Rectangle> input){
         //set frame default properties
         setTitle("Sweep Line");
         setSize(FRAME_WIDTH,FRAME_HEIGHT);
@@ -21,16 +19,19 @@ class SweepLineFrame extends JFrame{
 
         //set layout
         Container contentPane = getContentPane();
-        contentPane.setLayout(new FlowLayout());
+        contentPane.setLayout(new BorderLayout(10,2));
 
-        //place a button
-        areaButton = new JButton("Calculate Area");
-        contentPane.add(areaButton);
+        //create panels
+        DrawPanel draw = new DrawPanel(input);
+        ControlPanel control = new ControlPanel(input);
+        draw.setBorder(BorderFactory.createLoweredBevelBorder());
+        control.setBorder(BorderFactory.createLoweredBevelBorder());
+        
 
-        //add button to handler
-        handler= new AreaButtonHandler();
-        areaButton.addActionListener(handler);
 
+        //add panels to frame
+        contentPane.add(draw,BorderLayout.CENTER);
+        contentPane.add(control,BorderLayout.EAST);
 
 
         //close program when exiting the frame
@@ -45,8 +46,22 @@ class SweepLineFrame extends JFrame{
 
 
     public static void main(String[] a){
+        ArrayList<Rectangle>input = new ArrayList<Rectangle>();
+        // manually creating array for now, will read it from file later.
+        /*
+        Rectangle r0 = new Rectangle(0,0,4,4);
+        Rectangle r1 = new Rectangle(2,2,1,1);
+        Rectangle r2 = new Rectangle(1,1,5,5);
+        */
+        // test rectangles from the doc
+        Rectangle r0 = new Rectangle(120,100,58,58);
+        Rectangle r1 = new Rectangle(160,140,30,32);
+        Rectangle r2 = new Rectangle(225,164,55,24);
+        input.add(r0);
+        input.add(r1);
+        input.add(r2);
 
-        SweepLineFrame sweep = new SweepLineFrame();
+        SweepLineFrame sweep = new SweepLineFrame(input);
         
         sweep.setVisible(true);
 
