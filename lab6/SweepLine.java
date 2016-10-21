@@ -8,6 +8,7 @@ class SweepLine{
     private BinarySearchTree yTree;
 
     private ArrayList<Rectangle>inputRectangles;
+    private ArrayList<Rectangle>animRectangles;
 
 
     public SweepLine(){
@@ -15,6 +16,7 @@ class SweepLine{
         yTree = new BinarySearchTree();
 
         inputRectangles = new ArrayList<Rectangle>();
+        animRectangles = new ArrayList<Rectangle>();
     }
 
     public SweepLine(ArrayList<Rectangle> r){
@@ -25,6 +27,10 @@ class SweepLine{
 
     public ArrayList<Rectangle>rectangles(){
         return inputRectangles;
+    }
+    
+    public ArrayList<Rectangle>animRectangles(){
+        return animRectangles;
     }
 
     public void fillYTree(){
@@ -45,7 +51,7 @@ class SweepLine{
         //yTree.print(yTree.root);
     }
     // performs iterative in order traversal to check nodes
-    public double sweepXTree(){
+    public double sweepXTree(int preY,int curY){
         System.out.println("ENTER sweepXTree");
         int counter=1;int L=0;
 
@@ -63,14 +69,20 @@ class SweepLine{
                 System.out.println("nextX : " + nextX.getPrimary() + "  LOWHIGH: " + nextX.getLH());
                 if(counter!=0){
                     L = L + (nextX.getPrimary() - prevX.getPrimary());
+                    Rectangle r = new Rectangle(prevX.getPrimary(),preY,nextX.getPrimary()-prevX.getPrimary(),curY-preY);
+                    animRectangles.add(r);
                     System.out.println("L = " + L);
                 }
                 prevX = nextX;
+                /*
                 if(prevX.getLH() == false)
                     counter++;
                 else
                     counter--;
-                //counter = (prevX.getLH() == false) ? counter++:counter--;
+                    */
+                counter = (prevX.getLH() == false) ? counter+1:counter-1;
+
+                
                 System.out.println("counter: " + counter);
             }
             else{
@@ -124,7 +136,7 @@ class SweepLine{
             System.out.println("YMIN: " + n.getPrimary() + "     LOWHIGH: " + n.getLH());
             System.out.println("PREY: " + preY + "  CURY: " + curY);
 
-            L = sweepXTree();
+            L = sweepXTree(preY,curY);
             if(curY-preY ==0)
                 area = area + L;
             else

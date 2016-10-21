@@ -26,17 +26,10 @@ class AreaButtonHandler implements ActionListener{
         JRootPane pane = clicked.getRootPane();
         Frame frame = (JFrame)pane.getParent();
 
-
         area = sweep.computeArea();
 
 
         JOptionPane.showMessageDialog(frame,area);
-
-
-
-
-
-
 
 
     }
