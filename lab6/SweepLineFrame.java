@@ -56,7 +56,7 @@ class SweepLineFrame extends JFrame{
         // test rectangles from the doc
         Rectangle r0 = new Rectangle(120,100,58,58);
         Rectangle r1 = new Rectangle(160,140,30,32);
-        Rectangle r2 = new Rectangle(225,164,55,24);
+        Rectangle r2 = new Rectangle(180,164,55,24);
         input.add(r0);
         input.add(r1);
         input.add(r2);

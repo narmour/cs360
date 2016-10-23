@@ -8,7 +8,7 @@ class SweepLine{
     private BinarySearchTree yTree;
 
     private ArrayList<Rectangle>inputRectangles;
-    private ArrayList<Rectangle>animRectangles;
+    private ArrayList<ArrayList<Rectangle>> animRectangles;
 
 
     public SweepLine(){
@@ -16,7 +16,7 @@ class SweepLine{
         yTree = new BinarySearchTree();
 
         inputRectangles = new ArrayList<Rectangle>();
-        animRectangles = new ArrayList<Rectangle>();
+        animRectangles = new ArrayList<ArrayList<Rectangle>>();
     }
 
     public SweepLine(ArrayList<Rectangle> r){
@@ -29,7 +29,7 @@ class SweepLine{
         return inputRectangles;
     }
     
-    public ArrayList<Rectangle>animRectangles(){
+    public ArrayList<ArrayList<Rectangle>>animRectangles(){
         return animRectangles;
     }
 
@@ -47,12 +47,12 @@ class SweepLine{
             yTree.insert(high);
 
         }
-        //System.out.println("YTREE");
+        ////System.out.println("YTREE");
         //yTree.print(yTree.root);
     }
     // performs iterative in order traversal to check nodes
     public double sweepXTree(int preY,int curY){
-        System.out.println("ENTER sweepXTree");
+        //System.out.println("ENTER sweepXTree");
         int counter=1;int L=0;
 
         TreeNode prevX = null;
@@ -60,18 +60,21 @@ class SweepLine{
 
         prevX = xTree.findMin();
 
+        ArrayList<Rectangle>sweepRectangle = new ArrayList<Rectangle>();
+
         while(prevX !=null){
            
-            System.out.println("prevX : " + prevX.getPrimary() + "  LOWHIGH: " + prevX.getLH());
+            //System.out.println("prevX : " + prevX.getPrimary() + "  LOWHIGH: " + prevX.getLH());
             nextX = successor(xTree,prevX);
             if(nextX !=null){
             
-                System.out.println("nextX : " + nextX.getPrimary() + "  LOWHIGH: " + nextX.getLH());
+                //System.out.println("nextX : " + nextX.getPrimary() + "  LOWHIGH: " + nextX.getLH());
                 if(counter!=0){
                     L = L + (nextX.getPrimary() - prevX.getPrimary());
                     Rectangle r = new Rectangle(prevX.getPrimary(),preY,nextX.getPrimary()-prevX.getPrimary(),curY-preY);
-                    animRectangles.add(r);
-                    System.out.println("L = " + L);
+                   // System.out.println("CREATED RECTANGLE: " +r.x+" "+r.y+" "+r.width+" "+r.height);
+                    sweepRectangle.add(r);
+                    //System.out.println("L = " + L);
                 }
                 prevX = nextX;
                 /*
@@ -83,14 +86,15 @@ class SweepLine{
                 counter = (prevX.getLH() == false) ? counter+1:counter-1;
 
                 
-                System.out.println("counter: " + counter);
+                //System.out.println("counter: " + counter);
             }
             else{
                 prevX = nextX;
             }
         }
-        System.out.println("EXIT sweepXTree");
-        System.out.println("L = " + L);
+        //System.out.println("EXIT sweepXTree");
+        //System.out.println("L = " + L);
+        animRectangles.add(sweepRectangle);
 
         return L;
 
@@ -133,15 +137,15 @@ class SweepLine{
             n = yTree.findMin();
             yTree.deleteMin();
             curY = n.getPrimary();
-            System.out.println("YMIN: " + n.getPrimary() + "     LOWHIGH: " + n.getLH());
-            System.out.println("PREY: " + preY + "  CURY: " + curY);
+            //System.out.println("YMIN: " + n.getPrimary() + "     LOWHIGH: " + n.getLH());
+            //System.out.println("PREY: " + preY + "  CURY: " + curY);
 
             L = sweepXTree(preY,curY);
             if(curY-preY ==0)
                 area = area + L;
             else
                 area = area + L*(curY-preY);
-            System.out.println("AREA: " + area);
+            //System.out.println("AREA: " + area);
             preY= curY;
             // create and insert two xTreeNodes if low value
             if(n.getLH() == false){
@@ -151,13 +155,13 @@ class SweepLine{
 
                 xTree.insert(xLow);
                 xTree.insert(xHigh);
-                System.out.println("added two xnodes");
-                System.out.println("lowx : " + xLow.getPrimary());
-                System.out.println("highx : " + xHigh.getPrimary());
+                //System.out.println("added two xnodes");
+                //System.out.println("lowx : " + xLow.getPrimary());
+                //System.out.println("highx : " + xHigh.getPrimary());
             }
             // else remove two xTreeNodes
             else{
-                System.out.println("removing " + n.getLow() + "   " + n.getHigh());
+                //System.out.println("removing " + n.getLow() + "   " + n.getHigh());
                 xTree.remove(n.getLow());
                 xTree.remove(n.getHigh());
             }
@@ -174,7 +178,7 @@ class SweepLine{
         // test rectangles from the doc
         Rectangle r0 = new Rectangle(120,100,58,58);
         Rectangle r1 = new Rectangle(160,140,30,32);
-        Rectangle r2 = new Rectangle(225,164,55,24);
+        Rectangle r2 = new Rectangle(180,164,55,24);
         
         /*
          * simple test caste
