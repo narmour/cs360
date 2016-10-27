@@ -23,7 +23,7 @@ class SweepLineFrame extends JFrame{
 
         //create panels
         DrawPanel draw = new DrawPanel(input);
-        ControlPanel control = new ControlPanel(input);
+        ControlPanel control = new ControlPanel();
         draw.setBorder(BorderFactory.createLoweredBevelBorder());
         control.setBorder(BorderFactory.createLoweredBevelBorder());
         

@@ -14,17 +14,21 @@ class DrawPanel extends JPanel implements ActionListener{
     private int x2;private int y2;
     private int temp;
 
+    private Timer t;
+    private SweepLine s;
+
 
     public DrawPanel(ArrayList<Rectangle> i){
         input = i;
         setLayout(new GridLayout(10,0));
         setBackground(Color.WHITE);
 
-        SweepLine s = new SweepLine(input);
+        s = new SweepLine(input);
         //generate sweep retangles
         s.computeArea();
         sweepRectangles = s.animRectangles();
         anim = animRectangles(sweepRectangles);
+        t = new Timer(100,(ActionListener)this);
 
         //init the draw line to start at first animRectangle
         Rectangle r = anim.get(0);
@@ -32,28 +36,40 @@ class DrawPanel extends JPanel implements ActionListener{
         y1 = r.y;
         x2 = maxLength(anim) +10;
         y2 = r.y;
-        temp =0;
-        System.out.println("FIRST RECTANGLE: " +r.x + " " + r.y + "     " + r.width  + "   " + r.height);
+        temp=0;
 
 
 
-        //start animation timer
-        Timer t = new Timer(100,(ActionListener)this);
-        t.start();
         
 
 
-
-
-
-
     }
+
+    public void startTimer(){
+        //init the draw line to start at first animRectangle
+        Rectangle r = anim.get(0);
+        x1 = r.x - 10;
+        y1 = r.y;
+        x2 = maxLength(anim) +10;
+        y2 = r.y;
+        temp=0;
+
+        //start animation timer
+        t.restart();
+    }
+
 
     public void actionPerformed(ActionEvent e){
         if(y1 < maxHeight(anim)){
             y1++;
             y2++;
         }
+        //else anim is finished print out result
+        else{
+            JOptionPane.showMessageDialog(this,s.computeArea());
+            t.stop();
+        }
+
 
         // find out what anim rectangle the line is at
         for(int i =0;i < anim.size();i++){

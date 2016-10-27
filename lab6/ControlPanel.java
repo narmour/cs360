@@ -7,7 +7,7 @@ class ControlPanel extends JPanel{
     private JButton areaButton;
     private AreaButtonHandler handler;
 
-    public ControlPanel(ArrayList<Rectangle> i){
+    public ControlPanel(){
         
 
         //place a button
@@ -15,7 +15,7 @@ class ControlPanel extends JPanel{
         add(areaButton);
 
         //add button to handler
-        handler= new AreaButtonHandler(i);
+        handler= new AreaButtonHandler();
         areaButton.addActionListener(handler);
     }
 

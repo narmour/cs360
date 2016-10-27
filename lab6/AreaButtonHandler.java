@@ -4,15 +4,12 @@ import java.awt.event.*;
 import java.util.*;
 
 class AreaButtonHandler implements ActionListener{
-    private SweepLine sweep;
     private ArrayList<Rectangle> input;
 
 
 
 
-    public AreaButtonHandler(ArrayList<Rectangle> i){
-        input = i;
-        sweep = new SweepLine(input);
+    public AreaButtonHandler(){
 
     }
 
@@ -20,16 +17,20 @@ class AreaButtonHandler implements ActionListener{
     public void actionPerformed(ActionEvent e){
 
         double area =0;
-
+        //get the clicked button
         JButton clicked = (JButton)e.getSource();
 
+        //get the frame from the button
         JRootPane pane = clicked.getRootPane();
-        Frame frame = (JFrame)pane.getParent();
+        JFrame frame = (JFrame)pane.getParent();
 
-        area = sweep.computeArea();
+        //start the animation
+        DrawPanel d = (DrawPanel)frame.getContentPane().getComponent(0);
+        d.startTimer();
 
 
-        JOptionPane.showMessageDialog(frame,area);
+        
+
 
 
     }
