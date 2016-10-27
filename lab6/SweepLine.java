@@ -8,7 +8,7 @@ class SweepLine{
     private BinarySearchTree yTree;
 
     private ArrayList<Rectangle>inputRectangles;
-    private ArrayList<ArrayList<Rectangle>> animRectangles;
+    private ArrayList<Rectangle> animRectangles;
 
 
     public SweepLine(){
@@ -16,7 +16,7 @@ class SweepLine{
         yTree = new BinarySearchTree();
 
         inputRectangles = new ArrayList<Rectangle>();
-        animRectangles = new ArrayList<ArrayList<Rectangle>>();
+        animRectangles = new ArrayList<Rectangle>();
     }
 
     public SweepLine(ArrayList<Rectangle> r){
@@ -29,7 +29,7 @@ class SweepLine{
         return inputRectangles;
     }
     
-    public ArrayList<ArrayList<Rectangle>>animRectangles(){
+    public ArrayList<Rectangle>animRectangles(){
         return animRectangles;
     }
 
@@ -60,7 +60,6 @@ class SweepLine{
 
         prevX = xTree.findMin();
 
-        ArrayList<Rectangle>sweepRectangle = new ArrayList<Rectangle>();
 
         while(prevX !=null){
            
@@ -73,7 +72,7 @@ class SweepLine{
                     L = L + (nextX.getPrimary() - prevX.getPrimary());
                     Rectangle r = new Rectangle(prevX.getPrimary(),preY,nextX.getPrimary()-prevX.getPrimary(),curY-preY);
                    // System.out.println("CREATED RECTANGLE: " +r.x+" "+r.y+" "+r.width+" "+r.height);
-                    sweepRectangle.add(r);
+                    animRectangles.add(r);
                     //System.out.println("L = " + L);
                 }
                 prevX = nextX;
@@ -94,7 +93,6 @@ class SweepLine{
         }
         //System.out.println("EXIT sweepXTree");
         //System.out.println("L = " + L);
-        animRectangles.add(sweepRectangle);
 
         return L;
 

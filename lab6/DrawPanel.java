@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 class DrawPanel extends JPanel implements ActionListener{
     private ArrayList<Rectangle> input;
-    private ArrayList<ArrayList<Rectangle>> sweepRectangles;
+    private ArrayList<Rectangle> sweepRectangles;
 
     private ArrayList<Rectangle> anim;
 
@@ -13,6 +13,8 @@ class DrawPanel extends JPanel implements ActionListener{
     private int x1;private int y1;
     private int x2;private int y2;
     private int temp;
+	private int curY;
+	private ArrayList<Integer> yRange;
 
     private Timer t;
     private SweepLine s;
@@ -26,8 +28,7 @@ class DrawPanel extends JPanel implements ActionListener{
         s = new SweepLine(input);
         //generate sweep retangles
         s.computeArea();
-        sweepRectangles = s.animRectangles();
-        anim = animRectangles(sweepRectangles);
+        anim = s.animRectangles();
         t = new Timer(100,(ActionListener)this);
 
         //init the draw line to start at first animRectangle
@@ -36,7 +37,13 @@ class DrawPanel extends JPanel implements ActionListener{
         y1 = r.y;
         x2 = maxLength(anim) +10;
         y2 = r.y;
-        temp=0;
+		
+		// get y ranges
+		yRange = yRanges(anim);
+		temp =0;
+		curY=yRange.get(0);
+		
+		System.out.println("CURY: " + curY);
 
 
 
@@ -57,31 +64,32 @@ class DrawPanel extends JPanel implements ActionListener{
         //start animation timer
         t.restart();
     }
+	
 
 
     public void actionPerformed(ActionEvent e){
+		//update prey and curY
+		if(y1 >= curY){
+			temp++;
+			if(temp < yRange.size())	
+				curY = yRange.get(temp);
+		}
         if(y1 < maxHeight(anim)){
             y1++;
             y2++;
         }
-        //else anim is finished print out result
+        //else anim is finished print out result and reset values
         else{
             JOptionPane.showMessageDialog(this,s.computeArea());
             t.stop();
-        }
-
-
-        // find out what anim rectangle the line is at
-        for(int i =0;i < anim.size();i++){
-            if(anim.get(i).y+anim.get(i).height > y1){
-                temp = i;
-                break;
-            }
+			temp=0;
+			curY=yRange.get(0);
         }
         repaint();
 
     }
-    //given an arrayList of rectangles, return max x cooridinate
+    
+   //given an arrayList of rectangles, return max x cooridinate
     public int maxLength(ArrayList<Rectangle> a){
         int max =0;
         for(Rectangle r:a){
@@ -100,41 +108,19 @@ class DrawPanel extends JPanel implements ActionListener{
                 max = r.y + r.height;
         }
         return max;
-    }
-    // given an arraylist<arraylist<rectangle>> return the total sweep rectangles
-    public ArrayList<Rectangle> animRectangles(ArrayList<ArrayList<Rectangle>> a){
-        ArrayList<Rectangle> sweeps = new ArrayList<Rectangle>();
-       for(ArrayList<Rectangle> rectangles: a){
-            int minX =9999;int maxX =0;
-            int minY =9999;int maxY =0;
-                for(Rectangle r:rectangles){
-                    /*
-                    System.out.println("CREATED RECTANGLE: " +r.x+" "+r.y+" "+r.width+" "+r.height);
-                    if(r.x < minX)
-                        minX = r.x;
+    } 
 
-                    if(r.y<minY)
-                        minY = r.y;
-                    if(r.x+r.width > maxX)
-                        maxX = r.x+r.width;
-                    if(r.y+r.height > maxY)
-                        maxY = r.y+r.height;
-                    */
-                    minX = (r.x < minX) ? r.x:minX;
-                    minY = (r.y < minY) ? r.y:minY;
-                    maxX = (r.x+r.width > maxX) ? r.x+r.width:maxX;
-                    maxY = (r.y+r.height > maxY)? r.y+r.height:maxY;
-                }
-                //System.out.println(minX);
-                Rectangle r = new Rectangle(minX,minY,maxX-minX,maxY-minY);
-                // im not positive why this happens, should fix)
-                if(minX!=9999)
-                    sweeps.add(r);
-           }
-       return sweeps;
-    }
-    
-    
+
+	public ArrayList<Integer> yRanges(ArrayList<Rectangle> a){
+		ArrayList<Integer> t = new ArrayList<Integer>();
+		
+		for (Rectangle r:a){
+			if(!t.contains(r.y+r.height))
+				t.add(r.y+r.height);
+		}
+		return t;
+	}
+		
     
 
 
@@ -160,11 +146,12 @@ class DrawPanel extends JPanel implements ActionListener{
         Color other = Color.YELLOW;
         for(int i =0;i < anim.size();i++){
             Rectangle r = anim.get(i);
-            if(temp == i)
-                g.setColor(current);
-            else
-                g.setColor(other);
-            g.fillRect(r.x,r.y,r.width,r.height);
+			if(r.y+r.height == curY)
+				g.setColor(current);
+			else
+				g.setColor(other);
+			if(t.isRunning())
+            	g.fillRect(r.x,r.y,r.width,r.height);
         }
 
 
