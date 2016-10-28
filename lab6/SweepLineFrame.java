@@ -1,10 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.io.*;
 
 class SweepLineFrame extends JFrame{
-    private static final int FRAME_WIDTH = 300;
-    private static final int FRAME_HEIGHT = 200;
+    private static final int FRAME_WIDTH = 1000;
+    private static final int FRAME_HEIGHT = 1000;
     private static final int FRAME_X_ORIGIN = 150;
     private static final int FRAME_Y_ORIGIN = 250;
 
@@ -44,8 +45,32 @@ class SweepLineFrame extends JFrame{
         contentPane.setBackground(Color.BLUE);
     }
 
+    // reads in rectangles from file numbers.txt
+    private static ArrayList<Rectangle>getInput()throws FileNotFoundException{
+        ArrayList<Rectangle> temp = new ArrayList<Rectangle>();
+        String line = new String();
+        try{
+            Scanner s = new Scanner(new File("numbers.txt"));
+            //fill rectangle array
+            do{
+                line = s.nextLine();
+                String[] rect = line.split(" ");
+                temp.add(new Rectangle(Integer.parseInt(rect[0]),Integer.parseInt(rect[1]),Integer.parseInt(rect[2]),Integer.parseInt(rect[3])));
 
-    public static void main(String[] a){
+            }while(s.hasNextLine());
+
+        }
+        catch (FileNotFoundException e){
+            System.out.println("error no numbers.txt");
+            return temp;
+        }
+
+        return temp;
+
+    }
+
+
+    public static void main(String[] a)throws FileNotFoundException{
         ArrayList<Rectangle>input = new ArrayList<Rectangle>();
         // manually creating array for now, will read it from file later.
         /*
@@ -57,9 +82,11 @@ class SweepLineFrame extends JFrame{
         Rectangle r0 = new Rectangle(120,100,58,58);
         Rectangle r1 = new Rectangle(160,140,30,32);
         Rectangle r2 = new Rectangle(225,164,55,24);
-        input.add(r0);
-        input.add(r1);
-        input.add(r2);
+        //input.add(r0);
+        //input.add(r1);
+        //input.add(r2);
+        
+        input =getInput();
 
         SweepLineFrame sweep = new SweepLineFrame(input);
         
