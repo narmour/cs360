@@ -64,7 +64,18 @@ class DrawPanel extends JPanel implements ActionListener{
         //start animation timer
         t.restart();
     }
-	
+
+    public void changeTimer(int delay){
+        //stop the timer
+        if(t.isRunning()){
+            t.stop();
+            t = new Timer(-1*delay,(ActionListener)this);
+            t.start();
+        }
+        else
+            t = new Timer(-1*delay,(ActionListener)this);
+            
+    }	
 
 
     public void actionPerformed(ActionEvent e){
@@ -84,7 +95,7 @@ class DrawPanel extends JPanel implements ActionListener{
             JOptionPane.showMessageDialog(this,s.computeArea());
             t.stop();
        	    temp=0;
-	    curY=yRange.get(0);
+	        curY=yRange.get(0);
         }
         repaint();
 

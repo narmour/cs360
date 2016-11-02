@@ -5,6 +5,7 @@ import java.util.*;
 
 class ControlPanel extends JPanel{
     private JButton areaButton;
+    private JSlider slider;
     private AreaButtonHandler handler;
 
     public ControlPanel(){
@@ -17,6 +18,13 @@ class ControlPanel extends JPanel{
         //add button to handler
         handler= new AreaButtonHandler();
         areaButton.addActionListener(handler);
+
+
+        //add slider
+        slider = new JSlider(JSlider.HORIZONTAL,-500,-50,-500);
+        slider.addChangeListener(new TimerSlideHandler());
+        add(slider);
+
     }
 
 
