@@ -1,6 +1,8 @@
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 class DrawPanel extends JPanel implements ActionListener{
     private ArrayList<Rectangle> input;
@@ -29,7 +31,8 @@ class DrawPanel extends JPanel implements ActionListener{
         //generate sweep retangles
         s.computeArea();
         anim = s.animRectangles();
-        t = new Timer(20,(ActionListener)this);
+
+        t = new Timer(200,(ActionListener)this);
 
         //init the draw line to start at first animRectangle
         Rectangle r = anim.get(0);
@@ -44,6 +47,7 @@ class DrawPanel extends JPanel implements ActionListener{
 		curY=yRange.get(0);
 		
 		System.out.println("CURY: " + curY);
+        System.out.println("RANGE SIZE: " + yRange.size() + " ANIM AREA SIZE: " + s.animAreas().size());
 
 
 
@@ -79,9 +83,19 @@ class DrawPanel extends JPanel implements ActionListener{
 
 
     public void actionPerformed(ActionEvent e){
+
+        //get textArea from ControlPanel
+        JRootPane pane = this.getRootPane();
+        JFrame frame = (JFrame)pane.getParent();
+        ControlPanel c = (ControlPanel)frame.getContentPane().getComponent(1);
+        JTextArea text = (JTextArea)c.getComponent(2);
+
 	    //update prey and curY
 	    if(y1 >= curY){
+
    	        temp++;
+            if(temp < s.animAreas().size() && s.animAreas().get(temp)!=0)
+                text.append(s.animAreas().get(temp) + "\n");
             if(temp < yRange.size())	
                 curY = yRange.get(temp);
 	    }
@@ -96,6 +110,7 @@ class DrawPanel extends JPanel implements ActionListener{
             t.stop();
        	    temp=0;
 	        curY=yRange.get(0);
+            text.setText("");
         }
         repaint();
 

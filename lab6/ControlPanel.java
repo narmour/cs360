@@ -1,14 +1,18 @@
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.event.*;
 import java.util.*;
 
 class ControlPanel extends JPanel{
     private JButton areaButton;
     private JSlider slider;
+    private JTextArea text;
     private AreaButtonHandler handler;
 
     public ControlPanel(){
+
+        // set layout
+        setLayout(new GridLayout(3,1));
         
 
         //place a button
@@ -20,10 +24,15 @@ class ControlPanel extends JPanel{
         areaButton.addActionListener(handler);
 
 
+
         //add slider
-        slider = new JSlider(JSlider.HORIZONTAL,-500,-50,-500);
+        slider = new JSlider(JSlider.HORIZONTAL,-200,-20,-200);
         slider.addChangeListener(new TimerSlideHandler());
         add(slider);
+
+        //place a textfield
+        text = new JTextArea();
+        add(text);
 
     }
 

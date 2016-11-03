@@ -9,6 +9,7 @@ class SweepLine{
 
     private ArrayList<Rectangle>inputRectangles;
     private ArrayList<Rectangle> animRectangles;
+    private ArrayList<Double> animAreas; 
 
 
     public SweepLine(){
@@ -17,6 +18,7 @@ class SweepLine{
 
         inputRectangles = new ArrayList<Rectangle>();
         animRectangles = new ArrayList<Rectangle>();
+        animAreas = new ArrayList<Double>();
     }
 
     public SweepLine(ArrayList<Rectangle> r){
@@ -31,6 +33,10 @@ class SweepLine{
     
     public ArrayList<Rectangle>animRectangles(){
         return animRectangles;
+    }
+
+    public ArrayList<Double>animAreas(){
+        return animAreas;
     }
 
     public void fillYTree(){
@@ -143,6 +149,7 @@ class SweepLine{
                 area = area + L;
             else
                 area = area + L*(curY-preY);
+            animAreas.add(area);
             //System.out.println("AREA: " + area);
             preY= curY;
             // create and insert two xTreeNodes if low value
