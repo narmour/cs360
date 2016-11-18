@@ -9,5 +9,10 @@ public class Move{
         m[1]=j;
         m[2]=k;
     }
+
+    void printMove(){
+        System.out.println("(" + m[0] + " " + m[1] + " " +m[2] +")");
+    }
+
 } 
 
