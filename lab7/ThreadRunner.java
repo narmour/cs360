@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.*;
 class ThreadRunner{
     public static void main(String[] a){
 
@@ -39,6 +40,8 @@ class ThreadRunner{
         }
 */
 
+	/*
+
         //create threadgroup
         ThreadGroup tg = new ThreadGroup("solvers");
         Board start = new Board(69);
@@ -55,6 +58,22 @@ class ThreadRunner{
         }
 
         System.out.println("Total runtime: " + (System.currentTimeMillis() - startTime) + "ms");
+	*/
+
+
+        // fork/join implementation
+        Board start = new Board(69);
+        long startTime = System.currentTimeMillis();
+        ForkJoinPool pool = new ForkJoinPool();
+        //add the child boards to the pool
+        ArrayList<Move> childMoves = start.nextMoves(start);
+        for(Move m:childMoves){
+            Board c = start.move(m,start);
+            pool.invoke(c);
+        }
+
+
+	
 
 
 

@@ -1,12 +1,16 @@
 import java.util.*;
 import java.io.*;
-class Board implements Runnable{
+import java.util.concurrent.*;
+class Board extends RecursiveAction implements Runnable{
 
     //boolean array to represent game board
     private boolean[] brd;
 
     //thread stuff
     private int threadID;
+
+    //fork/join stuff
+    private ArrayList<Board> tasks;
 
     //solution move set
     public ArrayList<Move> solution; 
@@ -32,6 +36,7 @@ class Board implements Runnable{
         brd = new boolean[49];
         solution= new ArrayList<Move>();
         threadID = b.threadID;
+        tasks = new ArrayList<Board>();
         for(int i=0;i<49;i++)
             brd[i] = b.brd[i];
     }
@@ -66,7 +71,7 @@ class Board implements Runnable{
                 if((i+1)%7==0)
                     System.out.println();
             }
-        System.out.println("\n");
+        //System.out.println("\n");
         }
 
     //returns true if not one of the 4 corner spots.
@@ -184,7 +189,8 @@ class Board implements Runnable{
             b.printBoard();
         }
     }
-
+       
+    // overrided thread method
     public void run(){
         try{
         ArrayList<Move> moves = new ArrayList<Move>();
@@ -198,7 +204,7 @@ class Board implements Runnable{
             Thread.currentThread().getThreadGroup().interrupt();
             Collections.reverse(this.solution);
             printMoves(this.solution);
-            applySolution(this,this.solution);
+            //applySolution(this,this.solution);
         }
 
         }catch(InterruptedException exception){
@@ -207,6 +213,23 @@ class Board implements Runnable{
 
         }
 
+    }
+
+    // overrided recursiveAction method
+    protected void compute(){
+        
+        //get child tasks
+        ArrayList<Move> childMoves = this.nextMoves(this);
+        for(Move m: childMoves){
+            Board c = this.move(m,this);
+            c.solve(c,new ArrayList<Move>());
+            c.fork();
+            tasks.add(c);
+        }
+
+
+
+        System.out.println("computing");
     }
 
 
