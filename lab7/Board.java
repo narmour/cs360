@@ -1,15 +1,18 @@
 import java.util.*;
 import java.io.*;
-class Board{
+class Board implements Runnable{
 
     //boolean array to represent game board
     private boolean[] brd;
 
+    //thread stuff
+    private int threadID;
+
     //solution move set
-    private ArrayList<Move> solution; 
+    public ArrayList<Move> solution; 
     
     //constructor
-    public Board(){
+    public Board(int id){
         //init 2d array
         brd = new boolean[49];
 
@@ -18,12 +21,17 @@ class Board{
         //set board
         brd = setBoard();
 
+        //set id
+        threadID = id;
+
+
     }
     
     //copy constructor
     public Board(Board b){
         brd = new boolean[49];
         solution= new ArrayList<Move>();
+        threadID = b.threadID;
         for(int i=0;i<49;i++)
             brd[i] = b.brd[i];
     }
@@ -58,6 +66,7 @@ class Board{
                 if((i+1)%7==0)
                     System.out.println();
             }
+        System.out.println("\n");
         }
 
     //returns true if not one of the 4 corner spots.
@@ -112,8 +121,6 @@ class Board{
                     Move m = new Move(i,i+7,i+14);
                     moveList.add(m);
                 }
-                if(i==2)
-                    System.out.println(x.brd[i+7]);
             }
         }
         return moveList;
@@ -122,19 +129,26 @@ class Board{
     ArrayList<Move>push(Move m, ArrayList<Move>mseq){
         ArrayList<Move>temp  =new ArrayList<Move>(mseq);
         temp.add(0,m);
-        System.out.println("mseq size: " + temp.size());
         return temp;
+    }
+
+    boolean validMove(Move m,Board b){
+        if(b.brd[m.m[0]] == false && b.brd[m.m[1]] == true && b.brd[m.m[2]] == true)
+            return true;
+        return false;
     }
 
 
     boolean solve(Board x, ArrayList<Move> mseq){
         if(solved(x))
             return true;
+        if(Thread.currentThread().isInterrupted())
+            return false;
         ArrayList<Move> next = nextMoves(x);
         for(Move m:next){
            Board y = move(m,x);
             if(solve(y,mseq)){
-                x.printBoard();
+                //x.printBoard();
                 //m.printMove();
                 solution.add(m);
                 mseq = push(m,mseq);
@@ -164,14 +178,45 @@ class Board{
             x.printMove();
     }
 
+    void applySolution(Board b, ArrayList<Move> s){
+        for(Move m :s ){
+            b = b.move(m,b);
+            b.printBoard();
+        }
+    }
+
+    public void run(){
+        try{
+        ArrayList<Move> moves = new ArrayList<Move>();
+        solve(this,moves);
+        // if it finishes, interrupt all other threads
+       // System.out.println("Thread " + threadID + " finished");
+       // System.out.println("Thread " + threadID + " solution size : " + solution.size());
+        Thread.sleep(1);
+        // if this runnable found a solution
+        if(this.solution.size() >1){
+            Thread.currentThread().getThreadGroup().interrupt();
+            Collections.reverse(this.solution);
+            printMoves(this.solution);
+            applySolution(this,this.solution);
+        }
+
+        }catch(InterruptedException exception){
+            System.out.println("got interrupted");
+            Thread.currentThread().interrupt();
+
+        }
+
+    }
+
 
     public static void main(String[] a){
+        /*
         Board b = new Board();
         ArrayList<Move> moves = new ArrayList<Move>();
-//        b.printBoard();
         b.solve(b,moves);
         b.printMoves(b.solution);
-       //b.nextMoves(b);
+        */
 
 
 
