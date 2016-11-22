@@ -40,7 +40,6 @@ class ThreadRunner{
         }
 */
 
-	/*
 
         //create threadgroup
         ThreadGroup tg = new ThreadGroup("solvers");
@@ -58,21 +57,19 @@ class ThreadRunner{
         }
 
         System.out.println("Total runtime: " + (System.currentTimeMillis() - startTime) + "ms");
-	*/
 
-
+        /*
         // fork/join implementation
         Board start = new Board(69);
         long startTime = System.currentTimeMillis();
         ForkJoinPool pool = new ForkJoinPool();
-        //add the child boards to the pool
-        ArrayList<Move> childMoves = start.nextMoves(start);
-        for(Move m:childMoves){
-            Board c = start.move(m,start);
-            pool.invoke(c);
+        pool.invoke(start);
+        for(Board b:start.tasks){
+            b.printMoves(b.solution);
+            System.out.println("\n");
         }
-
-
+        System.out.println("Total runtime: " + (System.currentTimeMillis() - startTime) + "ms");
+        */
 	
 
 

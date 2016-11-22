@@ -10,7 +10,7 @@ class Board extends RecursiveAction implements Runnable{
     private int threadID;
 
     //fork/join stuff
-    private ArrayList<Board> tasks;
+    public ArrayList<Board> tasks;
 
     //solution move set
     public ArrayList<Move> solution; 
@@ -27,6 +27,9 @@ class Board extends RecursiveAction implements Runnable{
 
         //set id
         threadID = id;
+
+        //init tasks
+        tasks = new ArrayList<Board>();
 
 
     }
@@ -222,14 +225,17 @@ class Board extends RecursiveAction implements Runnable{
         ArrayList<Move> childMoves = this.nextMoves(this);
         for(Move m: childMoves){
             Board c = this.move(m,this);
-            c.solve(c,new ArrayList<Move>());
-            c.fork();
             tasks.add(c);
         }
 
+        for(Board b : tasks){
+            b.solve(b,new ArrayList<Move>());
+        }
+
+        invokeAll(tasks);
 
 
-        System.out.println("computing");
+
     }
 
 
