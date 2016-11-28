@@ -192,6 +192,15 @@ class Board extends RecursiveAction implements Runnable{
             b.printBoard();
         }
     }
+
+    int numPegs(){
+        int counter =0;
+        for(int i=0;i<49;i++){
+            if(brd[i])
+                counter++;
+        }
+        return counter;
+    }
        
     // overrided thread method
     public void run(){
@@ -228,11 +237,15 @@ class Board extends RecursiveAction implements Runnable{
             tasks.add(c);
         }
 
+        //invokeAll(tasks);
+        
         for(Board b : tasks){
-            b.solve(b,new ArrayList<Move>());
+            b.fork();
+            b.join();
         }
+        
+        solve(this,new ArrayList<Move>());
 
-        invokeAll(tasks);
 
 
 
@@ -246,6 +259,7 @@ class Board extends RecursiveAction implements Runnable{
         b.solve(b,moves);
         b.printMoves(b.solution);
         */
+        System.out.println(Void.TYPE);
 
 
 
