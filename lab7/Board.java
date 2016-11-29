@@ -6,8 +6,6 @@ class Board extends RecursiveAction implements Runnable{
     //boolean array to represent game board
     private boolean[] brd;
 
-    //thread stuff
-    private int threadID;
 
     //fork/join stuff
     public ArrayList<Board> tasks;
@@ -17,7 +15,7 @@ class Board extends RecursiveAction implements Runnable{
     public ArrayList<Move> solution; 
     
     //constructor
-    public Board(int id){
+    public Board(){
         //init 2d array
         brd = new boolean[49];
 
@@ -26,8 +24,6 @@ class Board extends RecursiveAction implements Runnable{
         //set board
         brd = setBoard();
 
-        //set id
-        threadID = id;
 
         //init tasks
         tasks = new ArrayList<Board>();
@@ -40,7 +36,6 @@ class Board extends RecursiveAction implements Runnable{
     public Board(Board b){
         brd = new boolean[49];
         solution= new ArrayList<Move>();
-        threadID = b.threadID;
         tasks = new ArrayList<Board>();
         magicNumber = b.magicNumber;
         for(int i=0;i<49;i++)
@@ -220,7 +215,7 @@ class Board extends RecursiveAction implements Runnable{
             Thread.currentThread().getThreadGroup().interrupt();
             Collections.reverse(this.solution);
             printMoves(this.solution);
-            //applySolution(this,this.solution);
+           // applySolution(this,this.solution);
         }
 
         }catch(InterruptedException exception){
@@ -240,24 +235,18 @@ class Board extends RecursiveAction implements Runnable{
             Board c = this.move(m,this);
             tasks.add(c);
         }
-
-        //invokeAll(tasks);
-        
-        for(Board b : tasks){
-            b.fork();
-            b.join();
-        }
-        
+        // start subtasks
+        invokeAll(tasks);
         solve(this,new ArrayList<Move>());
-        /*
-        if(solution.size() >1){
-            System.out.println("solution size: " + solution.size() + "    pegs: " + numPegs() );
-        }
-        */
+
+        // print solution if found
         if(numPegs() ==magicNumber){
-            System.out.println("HI");
             printMoves(solution);
+
+          // unsure if this does anything
             cancel(true);
+            for(Board t : tasks)
+                t.cancel(true);
         }
 
 
