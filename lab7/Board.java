@@ -11,6 +11,7 @@ class Board extends RecursiveAction implements Runnable{
 
     //fork/join stuff
     public ArrayList<Board> tasks;
+    private int magicNumber;
 
     //solution move set
     public ArrayList<Move> solution; 
@@ -32,6 +33,7 @@ class Board extends RecursiveAction implements Runnable{
         tasks = new ArrayList<Board>();
 
 
+
     }
     
     //copy constructor
@@ -40,6 +42,7 @@ class Board extends RecursiveAction implements Runnable{
         solution= new ArrayList<Move>();
         threadID = b.threadID;
         tasks = new ArrayList<Board>();
+        magicNumber = b.magicNumber;
         for(int i=0;i<49;i++)
             brd[i] = b.brd[i];
     }
@@ -57,6 +60,7 @@ class Board extends RecursiveAction implements Runnable{
             return _brd;
         }
         String[] n = line.split(" ");
+        magicNumber = n.length;
         for(String x:n)
             _brd[Integer.parseInt(x)] = true;
 
@@ -245,7 +249,16 @@ class Board extends RecursiveAction implements Runnable{
         }
         
         solve(this,new ArrayList<Move>());
-
+        /*
+        if(solution.size() >1){
+            System.out.println("solution size: " + solution.size() + "    pegs: " + numPegs() );
+        }
+        */
+        if(numPegs() ==magicNumber){
+            System.out.println("HI");
+            printMoves(solution);
+            cancel(true);
+        }
 
 
 

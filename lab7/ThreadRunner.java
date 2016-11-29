@@ -40,19 +40,24 @@ class ThreadRunner{
 
     public static void main(String[] a){
         ThreadRunner t = new ThreadRunner();
-        //t.nonThreaded();
+        t.nonThreaded();
         //t.threaded();
 
+        System.out.println("FORK/JOIN");
         // fork/join implementation
         Board start = new Board(69);
         long startTime = System.currentTimeMillis();
+        try{
         ForkJoinPool pool = new ForkJoinPool();
         pool.invoke(start);
-        for(Board b:start.tasks){
-            b.printMoves(b.solution);
-            System.out.println("\n");
+        }catch(CancellationException e){
         }
         System.out.println("Total runtime: " + (System.currentTimeMillis() - startTime) + "ms");
+       
+        for(Board b:start.tasks){
+       //     b.printMoves(b.solution);
+         //   System.out.println("\n");
+        }
         System.out.println(Void.TYPE);
 	
 
