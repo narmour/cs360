@@ -6,6 +6,9 @@ class Board extends RecursiveAction implements Runnable{
     //boolean array to represent game board
     private boolean[] brd;
 
+    //the first move for the threaded solution
+    public Move fm;
+
 
     //fork/join stuff
     public ArrayList<Board> tasks;
@@ -31,6 +34,7 @@ class Board extends RecursiveAction implements Runnable{
 
 
     }
+
     
     //copy constructor
     public Board(Board b){
@@ -186,9 +190,11 @@ class Board extends RecursiveAction implements Runnable{
     }
 
     void applySolution(Board b, ArrayList<Move> s){
+        System.out.println("START SOLUTION");
         for(Move m :s ){
             b = b.move(m,b);
             b.printBoard();
+            System.out.println("move finished");
         }
     }
 
@@ -207,19 +213,18 @@ class Board extends RecursiveAction implements Runnable{
         ArrayList<Move> moves = new ArrayList<Move>();
         solve(this,moves);
         // if it finishes, interrupt all other threads
-       // System.out.println("Thread " + threadID + " finished");
-       // System.out.println("Thread " + threadID + " solution size : " + solution.size());
         Thread.sleep(1);
         // if this runnable found a solution
         if(this.solution.size() >1){
             Thread.currentThread().getThreadGroup().interrupt();
             Collections.reverse(this.solution);
+            //applySolution(this,this.solution);
+            solution.add(0,fm);
             printMoves(this.solution);
-           // applySolution(this,this.solution);
         }
 
         }catch(InterruptedException exception){
-            System.out.println("got interrupted");
+            //System.out.println("got interrupted");
             Thread.currentThread().interrupt();
 
         }
@@ -241,6 +246,7 @@ class Board extends RecursiveAction implements Runnable{
 
         // print solution if found
         if(numPegs() ==magicNumber){
+            Collections.reverse(solution);
             printMoves(solution);
 
           // unsure if this does anything
@@ -261,7 +267,6 @@ class Board extends RecursiveAction implements Runnable{
         b.solve(b,moves);
         b.printMoves(b.solution);
         */
-        System.out.println(Void.TYPE);
 
 
 

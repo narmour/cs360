@@ -29,11 +29,10 @@ class ThreadRunner{
         startTime = System.currentTimeMillis();
         for(Move m:childMoves){
             Board c = start.move(m,start);
+            c.fm = m;
             Thread t = new Thread(tg,c);
-            t.run();
-            c.solution.add(m);
+            t.start();
         }
-        Board b = new Board();
 
         System.out.println("Total runtime: " + (System.currentTimeMillis() - startTime) + "ms");
     }
@@ -58,8 +57,8 @@ class ThreadRunner{
 
     public static void main(String[] a){
         ThreadRunner t = new ThreadRunner();
-        t.threaded();
         t.nonThreaded();
         t.forkJoin();
+        t.threaded();
     }
 }
