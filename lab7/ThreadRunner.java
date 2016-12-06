@@ -2,7 +2,11 @@ import java.util.*;
 import java.util.concurrent.*;
 class ThreadRunner{
 
+    private String filename;
 
+    ThreadRunner(String f){
+	    filename =f;
+    }
 
     void nonThreaded(){
         System.out.println("NON-THREADED" );
@@ -56,7 +60,8 @@ class ThreadRunner{
 
 
     public static void main(String[] a){
-        ThreadRunner t = new ThreadRunner();
+	String filename = a[0];
+        ThreadRunner t = new ThreadRunner(filename);
         t.nonThreaded();
         t.forkJoin();
         t.threaded();

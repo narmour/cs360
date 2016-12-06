@@ -16,9 +16,11 @@ class Board extends RecursiveAction implements Runnable{
 
     //solution move set
     public ArrayList<Move> solution; 
+
+    private String filename;
     
     //constructor
-    public Board(){
+    public Board(String f){
         //init 2d array
         brd = new boolean[49];
 
@@ -31,6 +33,8 @@ class Board extends RecursiveAction implements Runnable{
         //init tasks
         tasks = new ArrayList<Board>();
 
+	filename =f;
+
 
 
     }
@@ -42,6 +46,7 @@ class Board extends RecursiveAction implements Runnable{
         solution= new ArrayList<Move>();
         tasks = new ArrayList<Board>();
         magicNumber = b.magicNumber;
+	filename = b.filename;
         for(int i=0;i<49;i++)
             brd[i] = b.brd[i];
     }
@@ -52,7 +57,7 @@ class Board extends RecursiveAction implements Runnable{
         // read in from game.txt
         String line = new String();
         try{
-            Scanner s = new Scanner(new File("game.txt"));
+            Scanner s = new Scanner(new File(filename));
             line = s.nextLine();
         }catch(FileNotFoundException e){
             System.out.println("no game.txt");
